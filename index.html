@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copilot Studio Kit – Installation Guide</title>
+<style>
+/* ── Reset & Base ─────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #f3f2f1;
+  color: #323130;
+  line-height: 1.6;
+}
+
+/* ── CSS Variables ────────────────────────────────────────────────────────── */
+:root {
+  --ms-blue: #0078D4;
+  --ms-dark-blue: #003A75;
+  --ms-light-blue: #C7E0F4;
+  --ms-teal: #00B7C3;
+  --ms-grey: #f3f2f1;
+  --ms-dark-grey: #323130;
+  --ms-med-grey: #605E5C;
+  --ms-border: #edebe9;
+  --ms-green: #107C10;
+  --ms-warning: #F7B731;
+  --ms-red: #A4262C;
+  --sidebar-width: 280px;
+  --header-height: 60px;
+}
+
+/* ── Top Header ───────────────────────────────────────────────────────────── */
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-height);
+  background: var(--ms-dark-blue);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.site-header .logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.site-header .logo-icon {
+  width: 28px; height: 28px;
+  background: var(--ms-blue);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 13px; color: white;
+  flex-shrink: 0;
+}
+.site-header .logo-text {
+  font-size: 14px; font-weight: 600;
+  color: white;
+  line-height: 1.2;
+}
+.site-header .logo-text span {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ms-teal);
+}
+.header-center {
+  flex: 1;
+  text-align: center;
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+.badge-version {
+  background: var(--ms-teal);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background: white;
+  border-right: 1px solid var(--ms-border);
+  overflow-y: auto;
+  z-index: 900;
+  transition: transform 0.3s ease;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: #f0f0f0; }
+.sidebar::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 2px; }
+
+.sidebar-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--ms-border);
+  background: var(--ms-grey);
+}
+.sidebar-header h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ms-med-grey);
+}
+
+/* Progress tracker */
+.progress-container {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--ms-border);
+  background: white;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--ms-med-grey);
+  margin-bottom: 6px;
+}
+.progress-bar-outer {
+  height: 6px;
+  background: var(--ms-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ms-blue), var(--ms-teal));
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* Nav links */
+.nav-section { padding: 8px 0; }
+.nav-section-title {
+  padding: 6px 20px 2px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--ms-med-grey);
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: var(--ms-dark-grey);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border-left: 3px solid transparent;
+  line-height: 1.3;
+}
+.nav-link:hover {
+  background: var(--ms-grey);
+  color: var(--ms-blue);
+}
+.nav-link.active {
+  background: #EFF6FC;
+  color: var(--ms-blue);
+  font-weight: 600;
+  border-left-color: var(--ms-blue);
+}
+.nav-link .nav-num {
+  min-width: 22px; height: 22px;
+  background: var(--ms-light-blue);
+  color: var(--ms-dark-blue);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0;
+}
+.nav-link.active .nav-num {
+  background: var(--ms-blue);
+  color: white;
+}
+.nav-link.completed .nav-num {
+  background: var(--ms-green);
+  color: white;
+}
+.nav-link.completed .nav-num::before {
+  content: '✓';
+  font-size: 11px;
+}
+
+/* ── Main Content ─────────────────────────────────────────────────────────── */
+.main-content {
+  margin-left: var(--sidebar-width);
+  margin-top: var(--header-height);
+  padding: 0 0 80px 0;
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* ── Hero Banner ──────────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--ms-dark-blue) 0%, #005a9e 60%, #0078D4 100%);
+  padding: 48px 48px 40px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: rgba(0,183,195,0.12);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 30%;
+  width: 200px; height: 200px;
+  background: rgba(199,224,244,0.08);
+  border-radius: 50%;
+}
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--ms-teal);
+  margin-bottom: 10px;
+}
+.hero h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  position: relative; z-index: 1;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--ms-teal);
+}
+.hero-subtitle {
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+  max-width: 600px;
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: relative; z-index: 1;
+}
+.hero-meta-item {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 12px;
+  backdrop-filter: blur(4px);
+}
+.hero-meta-item strong {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ms-teal);
+  margin-bottom: 2px;
+}
+
+/* ── Section containers ───────────────────────────────────────────────────── */
+.section {
+  padding: 32px 48px;
+  border-bottom: 1px solid var(--ms-border);
+  background: white;
+}
+.section:nth-child(even) { background: #fafaf9; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ms-light-blue);
+  cursor: pointer;
+  user-select: none;
+}
+.section-header:hover .section-title { color: var(--ms-blue); }
+.section-num {
+  min-width: 36px; height: 36px;
+  background: var(--ms-dark-blue);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ms-dark-blue);
+  flex: 1;
+  transition: color 0.2s;
+}
+.section-toggle {
+  color: var(--ms-blue);
+  font-size: 20px;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+}
+.section-toggle.open { transform: rotate(180deg); }
+
+.section-body {
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  max-height: 99999px;
+  opacity: 1;
+}
+.section-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* ── Step Cards ───────────────────────────────────────────────────────────── */
+.steps-container { display: flex; flex-direction: column; gap: 14px; }
+
+.step-card {
+  display: flex;
+  gap: 16px;
+  background: white;
+  border: 1px solid var(--ms-border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+}
+.step-card:hover {
+  box-shadow: 0 2px 12px rgba(0,120,212,0.12);
+  border-color: var(--ms-light-blue);
+}
+.step-badge {
+  min-width: 36px; height: 36px;
+  background: var(--ms-blue);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-content { flex: 1; }
+.step-content h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ms-dark-blue);
+  margin-bottom: 6px;
+}
+.step-content p, .step-content li {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.6;
+}
+.step-content ul {
+  margin: 6px 0 0 18px;
+}
+.step-content li { margin-bottom: 3px; }
+
+/* ── Callout Boxes ────────────────────────────────────────────────────────── */
+.callout {
+  display: flex;
+  gap: 12px;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin: 16px 0;
+  border-left: 4px solid;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; }
+.callout-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+  display: block;
+}
+.callout.tip {
+  background: #dff6dd;
+  border-color: #107c10;
+}
+.callout.tip .callout-label { color: #107c10; }
+.callout.warning {
+  background: #fff4ce;
+  border-color: #f7b731;
+}
+.callout.warning .callout-label { color: #986e00; }
+.callout.note {
+  background: #eff6fc;
+  border-color: #0078d4;
+}
+.callout.note .callout-label { color: #0078d4; }
+.callout.error {
+  background: #fde7e9;
+  border-color: #a4262c;
+}
+.callout.error .callout-label { color: #a4262c; }
+
+/* ── Feature Grid ─────────────────────────────────────────────────────────── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+.feature-card {
+  background: white;
+  border: 1px solid var(--ms-border);
+  border-top: 3px solid var(--ms-blue);
+  border-radius: 0 0 8px 8px;
+  padding: 16px;
+  transition: box-shadow 0.2s, border-top-color 0.2s;
+}
+.feature-card:hover {
+  box-shadow: 0 4px 16px rgba(0,120,212,0.1);
+  border-top-color: var(--ms-teal);
+}
+.feature-card h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ms-dark-blue);
+  margin-bottom: 6px;
+}
+.feature-card p {
+  font-size: 12.5px;
+  color: var(--ms-med-grey);
+  line-height: 1.5;
+}
+
+/* ── Prereq Badges ────────────────────────────────────────────────────────── */
+.prereq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+.prereq-card {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--ms-border);
+}
+.prereq-card .label {
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+}
+.prereq-card .value {
+  padding: 8px 12px;
+  font-size: 12.5px;
+  color: var(--ms-dark-grey);
+  background: var(--ms-grey);
+  min-height: 50px;
+}
+.prereq-card.required .label { background: var(--ms-red); }
+.prereq-card.dependency .label { background: var(--ms-dark-blue); }
+.prereq-card.optional .label { background: var(--ms-med-grey); }
+.prereq-card.recommended .label { background: var(--ms-green); }
+
+/* ── Tables ───────────────────────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 13px;
+}
+.data-table th {
+  background: var(--ms-dark-blue);
+  color: white;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+}
+.data-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--ms-border);
+  vertical-align: top;
+}
+.data-table tr:nth-child(even) td { background: var(--ms-grey); }
+.data-table tr:hover td { background: #EFF6FC; }
+.data-table .req-badge {
+  background: var(--ms-red);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+.data-table .opt-badge {
+  background: var(--ms-med-grey);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+}
+
+/* ── Tab Switcher ─────────────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  border-bottom: 2px solid var(--ms-border);
+  margin-bottom: 20px;
+  gap: 4px;
+}
+.tab-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ms-med-grey);
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  margin-bottom: -2px;
+}
+.tab-btn:hover { color: var(--ms-blue); }
+.tab-btn.active {
+  color: var(--ms-blue);
+  font-weight: 700;
+  border-bottom-color: var(--ms-blue);
+}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── Heading inside section ───────────────────────────────────────────────── */
+h2.subsection {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ms-blue);
+  margin: 24px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ms-light-blue);
+}
+h3.subsection {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ms-dark-grey);
+  margin: 18px 0 8px;
+}
+p { font-size: 14px; margin-bottom: 10px; }
+ul, ol { padding-left: 22px; margin-bottom: 12px; }
+li { font-size: 14px; margin-bottom: 5px; line-height: 1.55; }
+strong { color: var(--ms-dark-blue); }
+
+/* ── Code / URL blocks ───────────────────────────────────────────────────── */
+.url-chip {
+  display: inline-block;
+  background: #f0f6ff;
+  border: 1px solid var(--ms-light-blue);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--ms-blue);
+  word-break: break-all;
+}
+code {
+  background: #f0f0ef;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12.5px;
+  color: #c7254e;
+}
+
+/* ── Issue cards ──────────────────────────────────────────────────────────── */
+.issue-card {
+  border-radius: 8px;
+  border: 1px solid;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.issue-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.issue-header:hover { filter: brightness(0.96); }
+.issue-body {
+  padding: 0 16px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.2s;
+}
+.issue-body.open {
+  max-height: 300px;
+  padding: 12px 16px;
+}
+.issue-card.error { border-color: #f3b3b6; }
+.issue-card.error .issue-header { background: #fde7e9; color: var(--ms-red); }
+.issue-card.warning { border-color: #fde3a0; }
+.issue-card.warning .issue-header { background: #fff4ce; color: #986e00; }
+.issue-card.note { border-color: var(--ms-light-blue); }
+.issue-card.note .issue-header { background: #eff6fc; color: var(--ms-blue); }
+
+/* ── Resource links ───────────────────────────────────────────────────────── */
+.resource-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.resource-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: white;
+  border: 1px solid var(--ms-border);
+  border-radius: 8px;
+  padding: 14px;
+  text-decoration: none;
+  color: var(--ms-dark-grey);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.resource-link:hover {
+  box-shadow: 0 2px 10px rgba(0,120,212,0.1);
+  border-color: var(--ms-blue);
+}
+.resource-link .rl-icon {
+  width: 32px; height: 32px;
+  background: var(--ms-light-blue);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
+.resource-link .rl-text h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ms-dark-blue);
+  margin-bottom: 3px;
+}
+.resource-link .rl-text span {
+  font-size: 11px;
+  color: var(--ms-med-grey);
+  font-family: 'Consolas', monospace;
+  word-break: break-all;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.site-footer {
+  margin-left: var(--sidebar-width);
+  background: var(--ms-dark-blue);
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  padding: 20px;
+  font-size: 12px;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root { --sidebar-width: 0px; }
+  .sidebar { transform: translateX(-280px); width: 280px; }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .hero { padding: 24px 20px; }
+  .hero h1 { font-size: 24px; }
+  .section { padding: 20px; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .header-center { display: none; }
+  .hamburger { display: flex !important; }
+}
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  padding: 6px;
+  margin-right: 12px;
+}
+.hamburger span {
+  display: block;
+  width: 20px; height: 2px;
+  background: white;
+  border-radius: 2px;
+}
+
+/* ── Smooth scroll highlight ─────────────────────────────────────────────── */
+.section:target .section-header { animation: highlight 1s ease; }
+@keyframes highlight {
+  0% { background: rgba(0,120,212,0.1); }
+  100% { background: transparent; }
+}
+
+/* ── Sticky TOC top-bar ──────────────────────────────────────────────────── */
+.sticky-toc {
+  position: sticky;
+  top: var(--header-height);
+  background: white;
+  border-bottom: 1px solid var(--ms-border);
+  padding: 8px 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  z-index: 500;
+  font-size: 12px;
+}
+.sticky-toc a {
+  color: var(--ms-blue);
+  text-decoration: none;
+  padding: 3px 8px;
+  border-radius: 12px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.sticky-toc a:hover { background: var(--ms-light-blue); }
+.sticky-toc .sep { color: var(--ms-border); }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <a href="#top" class="logo">
+    <div class="logo-icon">MS</div>
+    <div class="logo-text">
+      Microsoft
+      <span>Copilot Studio Kit</span>
+    </div>
+  </a>
+  <div class="header-center">Installation Guide</div>
+  <div class="header-right">
+    <span class="badge-version">Latest: Apr 2025+</span>
+    <span>March 2026</span>
+  </div>
+</header>
+
+<!-- ═══ SIDEBAR ══════════════════════════════════════════════════════════════ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h3>Installation Guide</h3>
+  </div>
+  <div class="progress-container">
+    <div class="progress-label">
+      <span>Your progress</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progress-bar"></div>
+    </div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-title">Sections</div>
+    <a class="nav-link" href="#section-overview" onclick="markVisited('s0')">
+      <span class="nav-num" id="nav-num-s0">&#x2022;</span>Overview &amp; Features
+    </a>
+    <a class="nav-link" href="#section-prereqs" onclick="markVisited('s1')">
+      <span class="nav-num" id="nav-num-s1">1</span>Prerequisites
+    </a>
+    <a class="nav-link" href="#section-appsource" onclick="markVisited('s2')">
+      <span class="nav-num" id="nav-num-s2">2</span>Install via AppSource
+    </a>
+    <a class="nav-link" href="#section-github" onclick="markVisited('s3')">
+      <span class="nav-num" id="nav-num-s3">3</span>Install via GitHub
+    </a>
+    <a class="nav-link" href="#section-postinstall" onclick="markVisited('s4')">
+      <span class="nav-num" id="nav-num-s4">4</span>Post-Install Config
+    </a>
+    <a class="nav-link" href="#section-wizard" onclick="markVisited('s5')">
+      <span class="nav-num" id="nav-num-s5">5</span>Setup Wizard
+    </a>
+    <a class="nav-link" href="#section-security" onclick="markVisited('s6')">
+      <span class="nav-num" id="nav-num-s6">6</span>Security Roles
+    </a>
+    <a class="nav-link" href="#section-access" onclick="markVisited('s7')">
+      <span class="nav-num" id="nav-num-s7">7</span>Access the App
+    </a>
+    <a class="nav-link" href="#section-issues" onclick="markVisited('s8')">
+      <span class="nav-num" id="nav-num-s8">8</span>Known Issues
+    </a>
+    <a class="nav-link" href="#section-resources" onclick="markVisited('s9')">
+      <span class="nav-num" id="nav-num-s9">9</span>Resources
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ══════════════════════════════════════════════════════════════════ -->
+<main class="main-content" id="top">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Microsoft</div>
+    <h1><em>Copilot Studio Kit</em><br>Installation Guide</h1>
+    <p class="hero-subtitle">
+      A comprehensive, step-by-step guide for deploying the Copilot Studio Kit in your
+      Power Platform environment — enabling tenant-wide monitoring, governance, and automated
+      testing of Copilot Studio agents at enterprise scale.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>Date</strong>March 17, 2026</div>
+      <div class="hero-meta-item"><strong>Kit Version</strong>April 2025+ (Latest)</div>
+      <div class="hero-meta-item"><strong>Source</strong>Official Microsoft Docs<br>+ GitHub</div>
+    </div>
+  </div>
+
+  <!-- Sticky TOC bar -->
+  <div class="sticky-toc">
+    <a href="#section-overview">Overview</a><span class="sep">|</span>
+    <a href="#section-prereqs">Prerequisites</a><span class="sep">|</span>
+    <a href="#section-appsource">AppSource</a><span class="sep">|</span>
+    <a href="#section-github">GitHub</a><span class="sep">|</span>
+    <a href="#section-postinstall">Post-Install</a><span class="sep">|</span>
+    <a href="#section-wizard">Setup Wizard</a><span class="sep">|</span>
+    <a href="#section-security">Security</a><span class="sep">|</span>
+    <a href="#section-access">Access App</a><span class="sep">|</span>
+    <a href="#section-issues">Issues</a><span class="sep">|</span>
+    <a href="#section-resources">Resources</a>
+  </div>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: OVERVIEW -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-overview">
+    <div class="section-header" onclick="toggleSection('overview')">
+      <div class="section-num">&#9733;</div>
+      <h2 class="section-title">Overview &amp; Features</h2>
+      <span class="section-toggle open" id="toggle-overview">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-overview">
+      <p>
+        The <strong>Copilot Studio Kit</strong> is a free, open-source comprehensive toolset
+        developed by Microsoft. Updated monthly, it provides a
+        full enterprise governance, testing, and monitoring platform for Copilot Studio agents.
+      </p>
+      <p>
+        GitHub Repository: <span class="url-chip">https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit</span>
+      </p>
+
+      <h2 class="subsection">Key Capabilities</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>&#x1F9EA; Test Automation</h4>
+          <p>Batch-test agents with configurable test sets. Supports Response Match, Topic Match, Multi-Turn, Attachment Match, and AI-graded Generative Answers via AI Builder rubrics.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F5FA; Agent Inventory</h4>
+          <p>Tenant-wide view of all Copilot Studio agents: auth mode, knowledge sources, orchestration type, usage stats.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x2705; Compliance Hub</h4>
+          <p>Continuously evaluate agents against risk thresholds. Auto-creates compliance cases with SLA-driven workflows, Teams/Outlook notifications.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F4CA; Conversation KPIs</h4>
+          <p>Aggregated conversation-level KPIs in Dataverse with embedded Power BI dashboard for trend analysis and agent performance tracking.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F4A1; Prompt Advisor</h4>
+          <p>AI-assisted prompt engineering with confidence scoring and suggested refinements. Each iteration ~120 AI Builder credits.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F4CB; Rubric Refinement</h4>
+          <p>Create and iterate on reusable AI grading rubrics to align automated evaluation with human judgment and org quality standards.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F50D; Conversation Analyzer</h4>
+          <p>Analyze agent conversations using custom prompts for deeper operational insights beyond built-in analytics.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F4C2; SharePoint Sync</h4>
+          <p>Scheduled, selective content synchronization from SharePoint sites to Copilot Studio knowledge bases.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F527; Agent Review Tool</h4>
+          <p>Solution-level analysis identifying anti-patterns, security issues, and performance risks in agent configurations.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F4AC; Webchat Playground</h4>
+          <p>Visual webchat customization with live preview and automatic HTML generation for embedding agents.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F3A8; Adaptive Cards Gallery</h4>
+          <p>Pre-built adaptive card templates with dynamic data binding examples for agent responses.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F680; Pipeline Automation</h4>
+          <p>Quality-gate agent deployments via Power Platform Pipelines — only agents passing test thresholds deploy to production.</p>
+        </div>
+      </div>
+
+      <div class="callout note">
+        <span class="callout-icon">&#x1F4C5;</span>
+        <div class="callout-body">
+          <span class="callout-label">Release Cadence</span>
+          The kit is updated approximately monthly. The latest release (April 2025+) added multi-turn test automation support, new string comparison operators, Agent Review Tool, and Agent Inventory. Subscribe to GitHub releases to receive notifications.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: PREREQUISITES -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-prereqs">
+    <div class="section-header" onclick="toggleSection('prereqs')">
+      <div class="section-num">1</div>
+      <h2 class="section-title">Prerequisites</h2>
+      <span class="section-toggle open" id="toggle-prereqs">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-prereqs">
+
+      <div class="callout warning">
+        <span class="callout-icon">&#x26A0;</span>
+        <div class="callout-body">
+          <span class="callout-label">Complete Before Installing</span>
+          Validate every prerequisite below before attempting installation. Missing dependencies — especially the Creator Kit and PCF — are the #1 cause of failed installs.
+        </div>
+      </div>
+
+      <h2 class="subsection">Mandatory Requirements</h2>
+      <div class="prereq-grid">
+        <div class="prereq-card required">
+          <div class="label">Required</div>
+          <div class="value"><strong>Power Platform Environment + Dataverse</strong><br>Dataverse must be enabled as the data store in your target environment.</div>
+        </div>
+        <div class="prereq-card required">
+          <div class="label">Required</div>
+          <div class="value"><strong>System Administrator Role</strong><br>Installer must have the System Administrator security role in the target environment.</div>
+        </div>
+        <div class="prereq-card required">
+          <div class="label">Required</div>
+          <div class="value"><strong>Power Apps Model-Driven License</strong><br>Adequate licensing to run a Power Apps model-driven application.</div>
+        </div>
+        <div class="prereq-card required">
+          <div class="label">Required</div>
+          <div class="value"><strong>Power Automate Premium License</strong><br>Licensing to run Power Automate cloud flows with Premium connectors.</div>
+        </div>
+        <div class="prereq-card required">
+          <div class="label">Required — Enable First!</div>
+          <div class="value"><strong>PCF Components Enabled</strong><br>Power Apps Component Framework for canvas apps must be ON in the Dataverse environment settings before any solution import.</div>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">&#x1F4A1;</span>
+        <div class="callout-body">
+          <span class="callout-label">How to Enable PCF</span>
+          Power Platform Admin Center &rarr; Environments &rarr; [Your Environment] &rarr; Settings &rarr; Features &rarr; Enable "Power Apps component framework for canvas apps" toggle.
+        </div>
+      </div>
+
+      <h2 class="subsection">Required Dependencies (Install First!)</h2>
+      <div class="callout error">
+        <span class="callout-icon">&#x1F6AB;</span>
+        <div class="callout-body">
+          <span class="callout-label">Critical Dependency</span>
+          <strong>Creator Kit Core must be installed BEFORE the Copilot Studio Kit.</strong> Installing CSK without Creator Kit will trigger a dependency error that stops the import. There is no workaround — Creator Kit must be present first.
+        </div>
+      </div>
+
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-badge">1</div>
+          <div class="step-content">
+            <h4>Download Creator Kit Core</h4>
+            <p>Navigate to: <span class="url-chip">https://github.com/microsoft/powercat-creator-kit/releases</span></p>
+            <p>Download the latest <code>CreatorKitCore_managed.zip</code> file.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">2</div>
+          <div class="step-content">
+            <h4>Import Creator Kit Solution</h4>
+            <ul>
+              <li>Sign in to <strong>make.powerapps.com</strong></li>
+              <li>Select your target environment</li>
+              <li>Go to <strong>Solutions &rarr; Import Solution</strong></li>
+              <li>Browse, select the Creator Kit zip, and import</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">3</div>
+          <div class="step-content">
+            <h4>Wait for Completion</h4>
+            <p>Do not close the browser during import. Wait for <em>all</em> validation, extraction, and deployment steps to complete successfully before proceeding.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="subsection">Optional Requirements</h2>
+      <div class="prereq-grid">
+        <div class="prereq-card optional">
+          <div class="label">Optional</div>
+          <div class="value"><strong>AI Builder Credits</strong><br>~50 credits/Generative Answers test; ~120 credits/Prompt Advisor iteration.</div>
+        </div>
+        <div class="prereq-card optional">
+          <div class="label">Optional</div>
+          <div class="value"><strong>Azure Application Insights</strong><br>For additional AI-generated answer telemetry details.</div>
+        </div>
+        <div class="prereq-card optional">
+          <div class="label">Optional</div>
+          <div class="value"><strong>Power BI Pro / PPU</strong><br>Required to publish and embed the Conversation KPIs dashboard.</div>
+        </div>
+        <div class="prereq-card optional">
+          <div class="label">Optional</div>
+          <div class="value"><strong>Power Platform Admin Role</strong><br>For full Agent Inventory tenant visibility across all environments.</div>
+        </div>
+        <div class="prereq-card optional">
+          <div class="label">Optional</div>
+          <div class="value"><strong>SharePoint Access</strong><br>For SharePoint synchronization feature to agent knowledge bases.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: APPSOURCE -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-appsource">
+    <div class="section-header" onclick="toggleSection('appsource')">
+      <div class="section-num">2</div>
+      <h2 class="section-title">Installation Method A: AppSource / Marketplace</h2>
+      <span class="section-toggle open" id="toggle-appsource">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-appsource">
+
+      <div class="callout tip">
+        <span class="callout-icon">&#x2B50;</span>
+        <div class="callout-body">
+          <span class="callout-label">Recommended Method</span>
+          AppSource is the easiest path. Microsoft validates the package, the installer handles connection prompts, and you get automatic update notifications. Choose this unless you need a specific version.
+        </div>
+      </div>
+
+      <h2 class="subsection">Deploy from AppSource</h2>
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-badge">1</div>
+          <div class="step-content">
+            <h4>Navigate to AppSource</h4>
+            <p>Go to <span class="url-chip">https://appsource.microsoft.com</span> and search for <strong>"Copilot Studio Kit"</strong>, or use the direct alias: <span class="url-chip">https://aka.ms/CopilotStudioKit</span></p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">2</div>
+          <div class="step-content">
+            <h4>Get It Now</h4>
+            <p>Select <strong>Get it now</strong> on the Copilot Studio Kit listing page.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">3</div>
+          <div class="step-content">
+            <h4>Sign In</h4>
+            <p>Sign in with your Microsoft work or school account if prompted.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">4</div>
+          <div class="step-content">
+            <h4>Select Environment</h4>
+            <p>In the Install view, use the drop-down to select your <strong>target environment</strong>.</p>
+            <ul>
+              <li>Ensure Dataverse is enabled in this environment</li>
+              <li>Ensure Creator Kit is already installed</li>
+              <li>Ensure PCF components are enabled</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">5</div>
+          <div class="step-content">
+            <h4>Accept Terms &amp; Install</h4>
+            <p>Review the Terms and Statements. If you agree, check the confirmation boxes and select <strong>Install</strong>.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">6</div>
+          <div class="step-content">
+            <h4>Wait for Installation (10–20 min)</h4>
+            <p>Do not close the browser. You will receive an email when installation completes. Monitor progress in the Power Platform Admin Center under Environments &rarr; [Your Env] &rarr; Solutions.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="subsection">Post-Deployment Steps (AppSource)</h2>
+      <ol>
+        <li>Sign in to <strong>make.powerapps.com</strong></li>
+        <li>Go to <strong>Solutions</strong></li>
+        <li>Select <strong>Default Solution</strong></li>
+        <li>Select <strong>Connection references</strong></li>
+        <li>Locate <strong>Copilot Studio Kit - Dataverse</strong> and open for editing</li>
+        <li>Ensure all required fields are filled and connection is valid. Create new connection to Dataverse if needed.</li>
+        <li>Select <strong>Save</strong></li>
+        <li>Proceed to Section 4: Post-Installation Configuration</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: GITHUB -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-github">
+    <div class="section-header" onclick="toggleSection('github')">
+      <div class="section-num">3</div>
+      <h2 class="section-title">Installation Method B: GitHub</h2>
+      <span class="section-toggle open" id="toggle-github">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-github">
+
+      <div class="callout note">
+        <span class="callout-icon">&#x1F4D6;</span>
+        <div class="callout-body">
+          <span class="callout-label">Use GitHub When</span>
+          You need a specific version, want to install without AppSource, need to use the optional AgentInventoryUsage solution, or are performing a controlled upgrade.
+        </div>
+      </div>
+
+      <h2 class="subsection">Download &amp; Install</h2>
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-badge">1</div>
+          <div class="step-content">
+            <h4>Download Latest Release</h4>
+            <p>Navigate to: <span class="url-chip">https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/releases/latest</span></p>
+            <p>Download <code>CopilotStudioKit_[version]_managed.zip</code> to an accessible local folder.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">2</div>
+          <div class="step-content">
+            <h4>Sign In &amp; Select Environment</h4>
+            <p>Go to <span class="url-chip">https://make.powerapps.com</span> and select your target environment from the environment picker (top right).</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">3</div>
+          <div class="step-content">
+            <h4>Open Solutions &amp; Import</h4>
+            <p>In the left navigation, select <strong>Solutions</strong>. Then select <strong>Import solution</strong> from the toolbar.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">4</div>
+          <div class="step-content">
+            <h4>Browse &amp; Select File</h4>
+            <p>Select <strong>Browse</strong>, navigate to the downloaded <code>CopilotStudioKit_managed.zip</code> file, and select it. Click <strong>Next</strong>.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">5</div>
+          <div class="step-content">
+            <h4>Review &amp; Configure Connections</h4>
+            <p>After reviewing solution info, select <strong>Next</strong>. If prompted, create required connections (Dataverse, SharePoint, etc.). Select <strong>Import</strong>.</p>
+            <div class="callout warning" style="margin-top:10px;">
+              <span class="callout-icon">&#x26A0;</span>
+              <div class="callout-body"><span class="callout-label">Important</span><strong>Leave "Conversation KPIs report" values as-is.</strong> You will configure these in a later step.</div>
+            </div>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">6</div>
+          <div class="step-content">
+            <h4>Wait for Import to Complete</h4>
+            <p>The import may take 10–20 minutes. <strong>Do not close the browser tab.</strong> You will see a success banner when complete.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="subsection">Upgrading an Existing Installation</h2>
+      <ol>
+        <li>Download the latest <code>CopilotStudioKit_managed.zip</code> from GitHub Releases</li>
+        <li>Sign in to <strong>make.powerapps.com</strong> and select your environment</li>
+        <li>Go to <strong>Solutions &rarr; Import Solution &rarr; Browse</strong> and select the new zip</li>
+        <li>Select <strong>Next</strong> — Power Apps recognizes this as an upgrade to the existing managed solution</li>
+        <li>Confirm upgrade and select <strong>Next</strong>, leave KPI values as-is, then <strong>Import</strong></li>
+      </ol>
+
+      <div class="callout error">
+        <span class="callout-icon">&#x1F6A8;</span>
+        <div class="callout-body">
+          <span class="callout-label">Known Upgrade Issue</span>
+          <strong>Error:</strong> "Solution 'Power CAT Copilot Studio Kit' failed to import: ImportAsHolding failed: Cannot delete attribute: cat_copilottestrunid from Entity: cat_CopilotTestRun since the attribute is not a custom field."<br><br>
+          <strong>Workaround:</strong> Stage the upgrade before applying it. See:
+          <span class="url-chip">https://learn.microsoft.com/en-us/power-platform/alm/update-solutions</span>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">&#x1F514;</span>
+        <div class="callout-body">
+          <span class="callout-label">Stay Up To Date</span>
+          Subscribe to GitHub releases: Repository page &rarr; Watch &rarr; Custom &rarr; Releases &rarr; Apply. You'll get email notifications for every monthly release.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: POST-INSTALL CONFIG -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-postinstall">
+    <div class="section-header" onclick="toggleSection('postinstall')">
+      <div class="section-num">4</div>
+      <h2 class="section-title">Post-Installation Configuration</h2>
+      <span class="section-toggle open" id="toggle-postinstall">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-postinstall">
+
+      <div class="callout note">
+        <span class="callout-icon">&#x2139;</span>
+        <div class="callout-body">
+          <span class="callout-label">Applies to Both Methods</span>
+          Complete these steps after installing via either AppSource or GitHub. Use the Setup Wizard (Section 5) to automate most of these steps.
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-connections')">Step 1: Connections</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-sharepoint')">Step 2: SharePoint</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-inventory')">Step 3: Agent Inventory</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-flows')">Step 4: Enable Flows</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-kpi')">Step 5: KPI Dashboard</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-compliance')">Step 6: Compliance Hub</button>
+      </div>
+
+      <div class="tab-pane active" id="tab-connections">
+        <h3 class="subsection">Configure Connection References <span style="color:var(--ms-red);font-size:12px;font-weight:700;">REQUIRED</span></h3>
+        <p>Connection references link the Kit's cloud flows to actual connectors in your environment.</p>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Connection Reference</th>
+              <th>Purpose</th>
+              <th>Required?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Copilot Studio Kit - Dataverse</strong></td>
+              <td>Core Kit data access — test automation, inventory, most features</td>
+              <td><span class="req-badge">Required</span></td>
+            </tr>
+            <tr>
+              <td><strong>Copilot Studio Kit - SharePoint</strong></td>
+              <td>Source SharePoint site for content synchronization</td>
+              <td><span class="opt-badge">Optional</span></td>
+            </tr>
+            <tr>
+              <td><strong>Copilot Studio Kit - Power Platform for Admins</strong></td>
+              <td>Agent Inventory: enumerate all environments in tenant</td>
+              <td><span class="opt-badge">Optional</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>Steps:</strong></p>
+        <ol>
+          <li>Sign in to <strong>make.powerapps.com</strong></li>
+          <li>Go to <strong>Solutions &rarr; Default Solution</strong></li>
+          <li>Select <strong>Connection references</strong></li>
+          <li>Open each connection reference listed above for editing</li>
+          <li>Ensure all required fields are filled and the connection is valid</li>
+          <li>Create a new connection if needed, then <strong>Save</strong></li>
+        </ol>
+      </div>
+
+      <div class="tab-pane" id="tab-sharepoint">
+        <h3 class="subsection">Configure SharePoint Synchronization <span style="color:var(--ms-med-grey);font-size:12px;">Optional</span></h3>
+        <p>Required only if you plan to synchronize content from SharePoint to Copilot Studio knowledge bases.</p>
+        <ol>
+          <li>Configure the <strong>Copilot Studio Kit - SharePoint</strong> connection reference to point to the <em>source</em> SharePoint site</li>
+          <li>Ensure the Dataverse URL environment variable points to the Dataverse instance of the target agents</li>
+          <li>Configure this at any time before using the SharePoint Sync feature</li>
+        </ol>
+        <div class="callout warning">
+          <span class="callout-icon">&#x26A0;</span>
+          <div class="callout-body">
+            <span class="callout-label">Flow Dependency</span>
+            Do NOT enable SharePoint Synchronization cloud flows until the SharePoint connection reference is fully configured. Flows that start with "SharePoint Synchronization" should remain Off until then.
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-inventory">
+        <h3 class="subsection">Configure Agent Inventory <span style="color:var(--ms-med-grey);font-size:12px;">Optional</span></h3>
+        <p>Enables tenant-wide visibility into all Copilot Studio agents.</p>
+
+        <div class="callout tip">
+          <span class="callout-icon">&#x1F3E2;</span>
+          <div class="callout-body">
+            <span class="callout-label">Recommendation</span>
+            For full tenant-wide monitoring, configure both connection references below with accounts that have the highest permitted access levels.
+          </div>
+        </div>
+
+        <ol>
+          <li>Configure <strong>Copilot Studio Kit - Power Platform for Admins</strong> with an account holding <strong>Power Platform Administrator</strong> role — provides full environment enumeration across all tenants</li>
+          <li>Configure <strong>Copilot Studio Kit - Dataverse</strong> with an account holding <strong>System Administrator</strong> access to all target environments — gathers agent details from each environment</li>
+          <li>Accounts with limited permissions will see only the environments they have direct System Admin access to</li>
+        </ol>
+      </div>
+
+      <div class="tab-pane" id="tab-flows">
+        <h3 class="subsection">Enable Cloud Flows <span style="color:var(--ms-red);font-size:12px;font-weight:700;">REQUIRED</span></h3>
+
+        <div class="callout warning">
+          <span class="callout-icon">&#x26A0;</span>
+          <div class="callout-body">
+            <span class="callout-label">Critical Order</span>
+            Enable flows in this exact order: (1) Flows ending in <strong>"Grandchild"</strong>, (2) Flows ending in <strong>"Child"</strong>, (3) All remaining flows. Incorrect order can cause dependency failures.
+          </div>
+        </div>
+
+        <ol>
+          <li>Navigate to <span class="url-chip">https://make.powerautomate.com</span></li>
+          <li>Ensure the correct environment is selected</li>
+          <li>Select <strong>Solutions &rarr; Copilot Studio Kit</strong></li>
+          <li>Select <strong>Cloud flows</strong></li>
+          <li>Review Status column — all required flows should show <strong>On</strong></li>
+          <li>Enable <strong>Grandchild</strong> flows first</li>
+          <li>Enable <strong>Child</strong> flows next</li>
+          <li>Enable all remaining flows for features you plan to use</li>
+        </ol>
+
+        <div class="callout note">
+          <span class="callout-icon">&#x2139;</span>
+          <div class="callout-body">
+            <span class="callout-label">Selective Enablement</span>
+            You only need to enable flows for features you plan to use. Flows are named with the feature as a prefix, making it easy to identify which flows correspond to which features.
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-kpi">
+        <h3 class="subsection">Configure Conversation KPI Dashboard <span style="color:var(--ms-med-grey);font-size:12px;">Optional</span></h3>
+        <p>Required only if you want the embedded Power BI Conversation KPIs dashboard in the app.</p>
+        <ol>
+          <li>Download <code>Conversation.KPIs.zip</code> from the GitHub repository</li>
+          <li>Extract and open <code>Conversation KPIs.pbit</code> in Power BI Desktop</li>
+          <li>Enter the Dataverse URL as "Environment URL" (e.g., <code>org3c23948.crm.dynamics.com</code> — <strong>no https:// prefix</strong>)</li>
+          <li>Refresh data and sign in when prompted</li>
+          <li>Save and <strong>publish</strong> to a Power BI workspace. Note: Report Name + Workspace Name</li>
+          <li>Open in Power BI Service and note: <strong>Workspace GUID</strong> + <strong>Report GUID</strong> from the URL</li>
+          <li>Verify data source credentials: ... &rarr; View Semantic Model &rarr; File &rarr; Settings</li>
+          <li>Set a data refresh schedule</li>
+          <li>In Power Apps: Solutions &rarr; Default Solution &rarr; Environment variables &rarr; <strong>Conversation KPIs Report</strong></li>
+          <li>Replace placeholders in Default Value with your Workspace Name, Workspace GUID, Report Name, Report GUID</li>
+          <li>Select <strong>Save</strong></li>
+        </ol>
+        <div class="callout note">
+          <span class="callout-icon">&#x1F4CC;</span>
+          <div class="callout-body">
+            <span class="callout-label">My Workspace GUID</span>
+            If publishing to "My Workspace" in Power BI, use this fixed GUID: <code>00000000-0000-0000-0000-000000000000</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-compliance">
+        <h3 class="subsection">Set Up Compliance Hub <span style="color:var(--ms-med-grey);font-size:12px;">Optional</span></h3>
+        <div class="callout warning">
+          <span class="callout-icon">&#x26A0;</span>
+          <div class="callout-body">
+            <span class="callout-label">Prerequisite</span>
+            Compliance Hub requires <strong>Agent Inventory to be fully configured first</strong>. Complete the Agent Inventory tab before setting up Compliance Hub.
+          </div>
+        </div>
+        <p>Follow the detailed Compliance Hub setup guide:</p>
+        <p><span class="url-chip">https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/COMPLIANCE_HUB.md</span></p>
+        <p>Compliance Hub allows you to:</p>
+        <ul>
+          <li>Define risk thresholds and policies for agent configurations</li>
+          <li>Automatically create compliance cases when violations are detected</li>
+          <li>Track cases through SLA-driven review lifecycles</li>
+          <li>Send Teams/Outlook notifications to agent makers for remediation</li>
+          <li>Configure enforcement actions: manual review, quarantine, or delete</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: SETUP WIZARD -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-wizard">
+    <div class="section-header" onclick="toggleSection('wizard')">
+      <div class="section-num">5</div>
+      <h2 class="section-title">Using the Setup Wizard</h2>
+      <span class="section-toggle open" id="toggle-wizard">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-wizard">
+
+      <div class="callout tip">
+        <span class="callout-icon">&#x1FA84;</span>
+        <div class="callout-body">
+          <span class="callout-label">Available Since May 2025</span>
+          The Setup Wizard provides an in-app guided experience for most post-deployment configuration steps. <strong>Use the Setup Wizard as your primary configuration method</strong> — it's faster, validates as you go, and reduces manual errors.
+        </div>
+      </div>
+
+      <p>Access the Setup Wizard from the <strong>Home page</strong> of the Copilot Studio Kit app after deployment.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>&#x2705; Prerequisites Check</h4>
+          <p>Validates environment dependencies and settings before you begin configuration. Catches issues before they cause problems.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F517; Connection References</h4>
+          <p>Lists all connection references, shows current status, and allows inline editing and validation without leaving the app.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x2699;&#xFE0F; Environment Variables</h4>
+          <p>Displays all environment variables with descriptions, usage guidance, and direct editing. Eliminates guesswork.</p>
+        </div>
+        <div class="feature-card">
+          <h4>&#x1F504; Flow Activation</h4>
+          <p>Shows current on/off status of all flows and enables them in correct dependency order with a single click.</p>
+        </div>
+      </div>
+
+      <div class="callout warning">
+        <span class="callout-icon">&#x26A0;</span>
+        <div class="callout-body">
+          <span class="callout-label">Not Covered by Setup Wizard</span>
+          These must still be done manually:
+          <ul style="margin-top:6px;">
+            <li>Publishing the Conversation KPIs Power BI report and scheduling data refresh</li>
+            <li>Creating Azure AD App Registrations for test automation (authentication + App Insights)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: SECURITY ROLES -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-security">
+    <div class="section-header" onclick="toggleSection('security')">
+      <div class="section-num">6</div>
+      <h2 class="section-title">Security Roles &amp; User Setup</h2>
+      <span class="section-toggle open" id="toggle-security">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-security">
+
+      <p>The Copilot Studio Kit ships with two current security roles. Assign users based on their responsibilities.</p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Role</th><th>Intended For</th><th>Access Level</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CSK - Administrator</strong></td>
+            <td>Solution administrators and governance owners who configure and maintain the kit</td>
+            <td>Organization-level access to all CSK tables and features</td>
+          </tr>
+          <tr>
+            <td><strong>CSK - Maker</strong></td>
+            <td>Developers and testers who build and validate Copilot Studio agents</td>
+            <td>User-level access; can create/run tests, limited read on shared config</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout warning">
+        <span class="callout-icon">&#x1F6AB;</span>
+        <div class="callout-body">
+          <span class="callout-label">Deprecated Roles — Do Not Use</span>
+          The following legacy roles have been deprecated: "Copilot Studio Kit - Administrator", "Copilot Studio Kit - Configurator", "Copilot Studio Kit - Tester/KPI Viewer". Migrate all users to the new <strong>CSK - Administrator</strong> or <strong>CSK - Maker</strong> roles.
+        </div>
+      </div>
+
+      <h2 class="subsection">Feature Access Matrix</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th>Feature Area</th><th>CSK - Administrator</th><th>CSK - Maker</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Test Automation</td><td>Full Organization access</td><td>Full access (User-level for Test Results)</td></tr>
+          <tr><td>Conversation KPI</td><td>Full Organization access</td><td>No access</td></tr>
+          <tr><td>Agent Inventory</td><td>Full Organization access</td><td>No access</td></tr>
+          <tr><td>Agent Compliance</td><td>Full Organization access</td><td>No access</td></tr>
+          <tr><td>Conversation Analyzer</td><td>Full Organization access</td><td>No access</td></tr>
+          <tr><td>Webchat Playground</td><td>Full Organization access</td><td>Full access</td></tr>
+          <tr><td>Adaptive Cards Gallery</td><td>Full Organization access</td><td>Full access</td></tr>
+          <tr><td>Agent Review Tool</td><td>Mixed (Org for patterns, User for reviews)</td><td>Mixed (User for reviews, Org for patterns)</td></tr>
+          <tr><td>SharePoint Sync</td><td>Organization access</td><td>User-level access</td></tr>
+          <tr><td>Common Tables</td><td>Organization access</td><td>User-level access</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: ACCESS APP -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-access">
+    <div class="section-header" onclick="toggleSection('access')">
+      <div class="section-num">7</div>
+      <h2 class="section-title">Accessing the App</h2>
+      <span class="section-toggle open" id="toggle-access">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-access">
+
+      <div class="steps-container">
+        <div class="step-card">
+          <div class="step-badge">1</div>
+          <div class="step-content">
+            <h4>Sign In to Power Apps</h4>
+            <p>Navigate to <span class="url-chip">https://make.powerapps.com</span></p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">2</div>
+          <div class="step-content">
+            <h4>Select Environment</h4>
+            <p>Use the environment picker (top right) to select the environment where you installed Copilot Studio Kit.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">3</div>
+          <div class="step-content">
+            <h4>Navigate to Apps</h4>
+            <p>Select <strong>Apps</strong> in the left navigation panel.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">4</div>
+          <div class="step-content">
+            <h4>Launch the App</h4>
+            <p>Locate and select <strong>Copilot Studio Kit</strong>. Select <strong>Play</strong> to launch.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">5</div>
+          <div class="step-content">
+            <h4>Run Setup Wizard</h4>
+            <p>From the app Home page, launch the <strong>Setup Wizard</strong> to verify and complete any remaining configuration.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-badge">6</div>
+          <div class="step-content">
+            <h4>(Optional) Bookmark the App</h4>
+            <p>Bookmark the app URL for quick access. Share the URL with team members who have been assigned CSK security roles.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout tip">
+        <span class="callout-icon">&#x1F680;</span>
+        <div class="callout-body">
+          <span class="callout-label">Next Steps After Launch</span>
+          <ol style="margin-top:6px;">
+            <li>Run the Setup Wizard from Home to verify all configuration</li>
+            <li>Configure your first Copilot Studio agent in the Kit</li>
+            <li>Create a test set and run your first automated test</li>
+            <li>Review Agent Inventory for tenant-wide visibility</li>
+            <li>Configure Compliance Hub policies for governance</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: KNOWN ISSUES -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-issues">
+    <div class="section-header" onclick="toggleSection('issues')">
+      <div class="section-num">8</div>
+      <h2 class="section-title">Known Issues &amp; Troubleshooting</h2>
+      <span class="section-toggle open" id="toggle-issues">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-issues">
+
+      <p>Click each issue to expand details and resolution steps.</p>
+
+      <div class="issue-card error">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x1F6A8; Upgrade Error: cat_copilottestrunid Cannot Delete Attribute
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Symptom:</strong> "Solution 'Power CAT Copilot Studio Kit' failed to import: ImportAsHolding failed with exception: Cannot delete attribute: cat_copilottestrunid from Entity: cat_CopilotTestRun since the attribute is not a custom field."</p>
+          <p><strong>Resolution:</strong> Stage the upgrade before applying it. This is a known issue under investigation by Microsoft.<br>
+          See: <span class="url-chip">https://learn.microsoft.com/en-us/power-platform/alm/update-solutions</span></p>
+        </div>
+      </div>
+
+      <div class="issue-card error">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x1F6AB; Dependency Error: Creator Kit Not Installed
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Symptom:</strong> Error during solution import indicating missing components or dependencies.</p>
+          <p><strong>Resolution:</strong> Install Creator Kit Core first from: <span class="url-chip">https://github.com/microsoft/powercat-creator-kit/releases</span></p>
+        </div>
+      </div>
+
+      <div class="issue-card error">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x1F6AB; PCF Components Not Enabled
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Symptom:</strong> Components fail to render, or solution import fails with component errors.</p>
+          <p><strong>Resolution:</strong> Enable PCF via: Power Platform Admin Center &rarr; Environments &rarr; [Your Env] &rarr; Settings &rarr; Features &rarr; "Power Apps component framework for canvas apps" &rarr; On.</p>
+        </div>
+      </div>
+
+      <div class="issue-card warning">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x26A0; Connection Popup on First App Launch
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Symptom:</strong> Users see a popup asking to allow connections when first opening the app.</p>
+          <p><strong>Resolution:</strong> This is expected behavior. Users should review and allow the listed connections. See ALLOW_CONNECTION_POPUP.md in the GitHub repo for detailed guidance.</p>
+        </div>
+      </div>
+
+      <div class="issue-card warning">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x26A0; Cloud Flows Remain Off After Import
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Symptom:</strong> Some or all cloud flows show Status = Off after solution import.</p>
+          <p><strong>Resolution:</strong> Manually enable flows in Power Automate in the correct order: Grandchild flows first, then Child flows, then all others. Use the Setup Wizard for guided activation.</p>
+        </div>
+      </div>
+
+      <div class="issue-card note">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x2139; Agent Inventory Shows Limited Environments
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Symptom:</strong> Agent Inventory only shows a subset of tenant environments.</p>
+          <p><strong>Resolution:</strong> The Power Platform for Admins connection reference needs a Power Platform Administrator account for full visibility. The Dataverse connection needs System Admin access to all target environments.</p>
+        </div>
+      </div>
+
+      <div class="issue-card warning">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x26A0; AI Builder Credits Exhausted
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Symptom:</strong> Test automation (Generative Answers) or Prompt Advisor returns errors or fails.</p>
+          <p><strong>Resolution:</strong> Check AI Builder credit balance in Power Platform Admin Center. Budget approximately 50 credits per Generative Answers test case and 120 credits per Prompt Advisor iteration. Purchase additional capacity as needed.</p>
+        </div>
+      </div>
+
+      <div class="issue-card note">
+        <div class="issue-header" onclick="toggleIssue(this)">
+          &#x2139; Custom Agent Authentication Limitations
+          <span style="margin-left:auto;">&#9660;</span>
+        </div>
+        <div class="issue-body">
+          <p><strong>Known Limitation:</strong> Custom agent end-user authentication support in test automation is limited to Entra ID V2 with SSO.</p>
+          <p><strong>Workaround:</strong> Design test cases with this limitation in mind. See ENABLE-AUTHENTICATION.md in the GitHub repo for setup guidance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <!-- SECTION: RESOURCES -->
+  <!-- ──────────────────────────────────────────────────────────────────────── -->
+  <section class="section" id="section-resources">
+    <div class="section-header" onclick="toggleSection('resources')">
+      <div class="section-num">9</div>
+      <h2 class="section-title">Key Resources &amp; References</h2>
+      <span class="section-toggle open" id="toggle-resources">&#9660;</span>
+    </div>
+    <div class="section-body" id="body-resources">
+
+      <h2 class="subsection">Official Documentation</h2>
+      <div class="resource-grid">
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit" target="_blank">
+          <div class="rl-icon">&#x1F4BB;</div>
+          <div class="rl-text"><h4>GitHub Repository</h4><span>github.com/microsoft/Power-CAT-Copilot-Studio-Kit</span></div>
+        </a>
+        <a class="resource-link" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/kit-install" target="_blank">
+          <div class="rl-icon">&#x1F4D6;</div>
+          <div class="rl-text"><h4>Official Installation Docs</h4><span>learn.microsoft.com/.../kit-install</span></div>
+        </a>
+        <a class="resource-link" href="https://learn.microsoft.com/en-us/microsoft-copilot-studio/guidance/kit-prerequisites" target="_blank">
+          <div class="rl-icon">&#x2705;</div>
+          <div class="rl-text"><h4>Prerequisites Reference</h4><span>learn.microsoft.com/.../kit-prerequisites</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/releases/latest" target="_blank">
+          <div class="rl-icon">&#x1F4E6;</div>
+          <div class="rl-text"><h4>Latest GitHub Release</h4><span>github.com/.../releases/latest</span></div>
+        </a>
+        <a class="resource-link" href="https://appsource.microsoft.com" target="_blank">
+          <div class="rl-icon">&#x1F6D2;</div>
+          <div class="rl-text"><h4>AppSource Listing</h4><span>aka.ms/CopilotStudioKit</span></div>
+        </a>
+      </div>
+
+      <h2 class="subsection">Dependencies</h2>
+      <div class="resource-grid">
+        <a class="resource-link" href="https://github.com/microsoft/powercat-creator-kit/releases" target="_blank">
+          <div class="rl-icon">&#x1F9F1;</div>
+          <div class="rl-text"><h4>Creator Kit Core</h4><span>github.com/microsoft/powercat-creator-kit/releases</span></div>
+        </a>
+        <a class="resource-link" href="https://learn.microsoft.com/en-us/power-apps/developer/component-framework/component-framework-for-canvas-apps" target="_blank">
+          <div class="rl-icon">&#x2699;&#xFE0F;</div>
+          <div class="rl-text"><h4>Enable PCF for Canvas Apps</h4><span>learn.microsoft.com/.../component-framework-for-canvas-apps</span></div>
+        </a>
+        <a class="resource-link" href="https://learn.microsoft.com/en-us/power-platform/admin/pricing-billing-skus" target="_blank">
+          <div class="rl-icon">&#x1F4B3;</div>
+          <div class="rl-text"><h4>Power Platform Licensing Guide</h4><span>learn.microsoft.com/.../pricing-billing-skus</span></div>
+        </a>
+      </div>
+
+      <h2 class="subsection">Advanced Configuration Guides</h2>
+      <div class="resource-grid">
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/SETUP_WIZARD.md" target="_blank">
+          <div class="rl-icon">&#x1FA84;</div>
+          <div class="rl-text"><h4>Setup Wizard Guide</h4><span>SETUP_WIZARD.md</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/SECURITY_ROLES.md" target="_blank">
+          <div class="rl-icon">&#x1F512;</div>
+          <div class="rl-text"><h4>Security Roles Reference</h4><span>SECURITY_ROLES.md</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/SETUP_USERS_AND_TEAMS.md" target="_blank">
+          <div class="rl-icon">&#x1F465;</div>
+          <div class="rl-text"><h4>Configure Users &amp; Teams</h4><span>SETUP_USERS_AND_TEAMS.md</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/AGENT_INVENTORY.md" target="_blank">
+          <div class="rl-icon">&#x1F5FA;</div>
+          <div class="rl-text"><h4>Agent Inventory Guide</h4><span>AGENT_INVENTORY.md</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/COMPLIANCE_HUB.md" target="_blank">
+          <div class="rl-icon">&#x2705;</div>
+          <div class="rl-text"><h4>Compliance Hub Setup</h4><span>COMPLIANCE_HUB.md</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/ENABLE-APPINSIGHTS.md" target="_blank">
+          <div class="rl-icon">&#x1F4CA;</div>
+          <div class="rl-text"><h4>App Insights Integration</h4><span>ENABLE-APPINSIGHTS.md</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/TROUBLESHOOT.md" target="_blank">
+          <div class="rl-icon">&#x1F6E0;</div>
+          <div class="rl-text"><h4>Troubleshooting Guide</h4><span>TROUBLESHOOT.md</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/RELEASE_NOTES.md" target="_blank">
+          <div class="rl-icon">&#x1F4CB;</div>
+          <div class="rl-text"><h4>Release Notes</h4><span>RELEASE_NOTES.md</span></div>
+        </a>
+      </div>
+
+      <h2 class="subsection">Support &amp; Community</h2>
+      <div class="resource-grid">
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/issues" target="_blank">
+          <div class="rl-icon">&#x1F41B;</div>
+          <div class="rl-text"><h4>GitHub Issues / Feature Requests</h4><span>Submit bugs and feature requests</span></div>
+        </a>
+        <a class="resource-link" href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit/blob/main/OFFICEHOURS.md" target="_blank">
+          <div class="rl-icon">&#x1F4DE;</div>
+          <div class="rl-text"><h4>Office Hours</h4><span>OFFICEHOURS.md</span></div>
+        </a>
+        <a class="resource-link" href="https://aka.ms/CopilotStudioGuidance" target="_blank">
+          <div class="rl-icon">&#x1F9ED;</div>
+          <div class="rl-text"><h4>Copilot Studio Guidance Hub</h4><span>aka.ms/CopilotStudioGuidance</span></div>
+        </a>
+        <a class="resource-link" href="https://aka.ms/PowerCATTools" target="_blank">
+          <div class="rl-icon">&#x1F9F0;</div>
+          <div class="rl-text"><h4>Tools Hub</h4><span>aka.ms/PowerCATTools</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  March 17, 2026 &nbsp;|&nbsp;
+  Based on official Microsoft documentation and GitHub source &nbsp;|&nbsp;
+  <a href="https://github.com/microsoft/Power-CAT-Copilot-Studio-Kit" target="_blank" style="color:var(--ms-teal);">GitHub Repo</a>
+</footer>
+
+<script>
+// ── Section toggle ─────────────────────────────────────────────────────────
+function toggleSection(id) {
+  const body = document.getElementById('body-' + id);
+  const toggle = document.getElementById('toggle-' + id);
+  if (!body) return;
+  const collapsed = body.classList.toggle('collapsed');
+  toggle.classList.toggle('open', !collapsed);
+}
+
+// ── Issue accordion ─────────────────────────────────────────────────────────
+function toggleIssue(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+  const arrow = header.querySelector('span:last-child');
+  if (arrow) arrow.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+// ── Tab switcher ────────────────────────────────────────────────────────────
+function switchTab(event, tabId) {
+  const bar = event.target.closest('.tab-bar');
+  bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const section = bar.nextElementSibling;
+  // Find all tab panes in the section's parent
+  const panes = bar.parentElement.querySelectorAll('.tab-pane');
+  panes.forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add('active');
+}
+
+// ── Mobile sidebar ──────────────────────────────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+
+// ── Progress tracker ────────────────────────────────────────────────────────
+const visited = new Set();
+const total = 10;
+
+function markVisited(key) {
+  visited.add(key);
+  updateProgress();
+  updateNavLinks();
+}
+
+function updateProgress() {
+  const pct = Math.round((visited.size / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function updateNavLinks() {
+  visited.forEach(key => {
+    const num = document.getElementById('nav-num-' + key);
+    if (num) {
+      num.parentElement.classList.add('completed');
+      num.textContent = '';
+    }
+  });
+}
+
+// ── Active nav highlight on scroll ──────────────────────────────────────────
+const sectionMap = {
+  'section-overview': 's0',
+  'section-prereqs': 's1',
+  'section-appsource': 's2',
+  'section-github': 's3',
+  'section-postinstall': 's4',
+  'section-wizard': 's5',
+  'section-security': 's6',
+  'section-access': 's7',
+  'section-issues': 's8',
+  'section-resources': 's9',
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const key = sectionMap[entry.target.id];
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+      if (key) markVisited(key);
+    }
+  });
+}, { rootMargin: '-20% 0px -60% 0px' });
+
+Object.keys(sectionMap).forEach(id => {
+  const el = document.getElementById(id);
+  if (el) observer.observe(el);
+});
+</script>
+</body>
+</html>
